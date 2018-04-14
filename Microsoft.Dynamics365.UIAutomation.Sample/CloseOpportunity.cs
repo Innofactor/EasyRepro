@@ -14,6 +14,9 @@ namespace Microsoft.Dynamics365.UIAutomation.Sample
         private readonly SecureString _password = System.Configuration.ConfigurationManager.AppSettings["OnlinePassword"].ToSecureString();
         private readonly Uri _xrmUri = new Uri(System.Configuration.ConfigurationManager.AppSettings["OnlineCrmUrl"].ToString());
 
+        
+
+
         [TestMethod]
         public void TestCloseOpportunity()
         {
