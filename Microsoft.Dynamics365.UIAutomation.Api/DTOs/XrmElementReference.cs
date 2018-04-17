@@ -598,11 +598,13 @@ namespace Microsoft.Dynamics365.UIAutomation.Api
                 }
             }
 
+            //Properties for both Online and On-prem
             public static string MarsOverlay;
             public static string ButBegin = "GuidedHelp_ButBegin";
             public static string ButtonClose;
             public static string Close = "GuidedHelp_Close";
 
+            //Properties for only On-prem
             public static string GuideIFrame;
 
         }
