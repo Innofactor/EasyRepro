@@ -107,14 +107,14 @@ namespace Microsoft.Dynamics365.UIAutomation.Browser
             return options;
         }
 
-        public EdgeOptions ToEdge()
-        {
-            var options = new EdgeOptions()
-            {
-                PageLoadStrategy = EdgePageLoadStrategy.Normal
-            };
+        //public EdgeOptions ToEdge()
+        //{
+        //    var options = new EdgeOptions()
+        //    {
+        //        PageLoadStrategy = EdgePageLoadStrategy.Normal
+        //    };
 
-            return options;
-        }
+        //    return options;
+        //}
     }
 }

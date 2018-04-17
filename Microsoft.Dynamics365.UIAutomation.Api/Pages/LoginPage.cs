@@ -89,24 +89,26 @@ namespace Microsoft.Dynamics365.UIAutomation.Api
 
         private LoginResult Login(IWebDriver driver, Uri uri, SecureString username, SecureString password, Action<LoginRedirectEventArgs> redirectAction)
         {
+
             var redirect = false;
             Online = !(this.OnlineDomains != null && !this.OnlineDomains.Any(d => uri.Host.EndsWith(d)));
-            driver.Navigate().GoToUrl(uri);
 
             if (Online)
             {
+                driver.Navigate().GoToUrl(uri);
+
                 if (driver.IsVisible(By.Id("use_another_account_link")))
                     driver.ClickWhenAvailable(By.Id("use_another_account_link"));
 
-                    driver.WaitUntilAvailable(By.XPath(Elements.Xpath[Reference.Login.UserId]),
-                        $"The Office 365 sign in page did not return the expected result and the user '{username}' could not be signed in.");
+                driver.WaitUntilAvailable(By.XPath(Elements.Xpath[Reference.Login.UserId]),
+                    $"The Office 365 sign in page did not return the expected result and the user '{username}' could not be signed in.");
 
-                    driver.FindElement(By.XPath(Elements.Xpath[Reference.Login.UserId])).SendKeys(username.ToUnsecureString());
-                    driver.FindElement(By.XPath(Elements.Xpath[Reference.Login.UserId])).SendKeys(Keys.Tab);
-                    driver.FindElement(By.XPath(Elements.Xpath[Reference.Login.UserId])).SendKeys(Keys.Enter);
-                    Thread.Sleep(2000);
+                driver.FindElement(By.XPath(Elements.Xpath[Reference.Login.UserId])).SendKeys(username.ToUnsecureString());
+                driver.FindElement(By.XPath(Elements.Xpath[Reference.Login.UserId])).SendKeys(Keys.Tab);
+                driver.FindElement(By.XPath(Elements.Xpath[Reference.Login.UserId])).SendKeys(Keys.Enter);
+                Thread.Sleep(2000);
 
-                    //If expecting redirect then wait for redirect to trigger
+                //If expecting redirect then wait for redirect to trigger
                 if (redirectAction != null)
                 {
                     //Wait for redirect to occur.
@@ -118,26 +120,45 @@ namespace Microsoft.Dynamics365.UIAutomation.Api
                 }
                 else
                 {
-                    driver.FindElement(By.XPath(Elements.Xpath[Reference.Login.LoginPassword])).SendKeys(password.ToUnsecureString());
-                    driver.FindElement(By.XPath(Elements.Xpath[Reference.Login.LoginPassword])).SendKeys(Keys.Tab);
-                    driver.FindElement(By.XPath(Elements.Xpath[Reference.Login.LoginPassword])).Submit();
+
+                    try
+                    {
+                        driver.FindElement(By.XPath(Elements.Xpath[Reference.Login.LoginPassword])).SendKeys(password.ToUnsecureString());
+                        driver.FindElement(By.XPath(Elements.Xpath[Reference.Login.LoginPassword])).SendKeys(Keys.Tab);
+                        driver.FindElement(By.XPath(Elements.Xpath[Reference.Login.LoginPassword])).Submit();
 
                         if (driver.IsVisible(By.XPath(Elements.Xpath[Reference.Login.StaySignedIn])))
                         {
-                                driver.ClickWhenAvailable(By.XPath(Elements.Xpath[Reference.Login.StaySignedIn])); 
+                            driver.ClickWhenAvailable(By.XPath(Elements.Xpath[Reference.Login.StaySignedIn]));
+
+                            try
+                            {
                                 driver.FindElement(By.XPath(Elements.Xpath[Reference.Login.StaySignedIn])).Submit();
+
+                            }
+                            catch (Exception)
+                            {
+                            }
                         }
 
-                    driver.WaitUntilVisible(By.XPath(Elements.Xpath[Reference.Login.CrmMainPage])
-                        , new TimeSpan(0, 0, 60),
-                        e => { e.WaitForPageToLoad(); },
-                        f => { throw new Exception("Login page failed."); });
+                        driver.WaitUntilVisible(By.XPath(Elements.Xpath[Reference.Login.CrmMainPage])
+                            , new TimeSpan(0, 0, 60),
+                            e => { e.WaitForPageToLoad(); },
+                            f => { throw new Exception("Login page failed."); });
+                    }
+                    catch (Exception ex)
+                    {
+
+
+                    }
+
                 }
             }
 
             else
             {
-                driver.Navigate().GoToUrl("http://" + Uri.EscapeDataString(username.ToUnsecureString()) + ":" + Uri.EscapeDataString(password.ToUnsecureString()) + "@" + uri.Authority + uri.AbsolutePath);
+                var protocol = uri.Scheme;
+                driver.Navigate().GoToUrl(protocol + "://" + Uri.EscapeDataString(username.ToUnsecureString()) + ":" + Uri.EscapeDataString(password.ToUnsecureString()) + "@" + uri.Authority + uri.AbsolutePath);
             }
 
             return redirect ? LoginResult.Redirect : LoginResult.Success;

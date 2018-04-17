@@ -5,23 +5,34 @@ using Microsoft.Dynamics365.UIAutomation.Browser;
 using System;
 using System.Collections.Generic;
 using System.Security;
-
+using OpenQA.Selenium;
 
 namespace Microsoft.Dynamics365.UIAutomation.Sample
 {
     [TestClass]
     public class ADFSLogin
     {
+        //Online
         private readonly SecureString _username = System.Configuration.ConfigurationManager.AppSettings["OnlineUsername"].ToSecureString();
         private readonly SecureString _password = System.Configuration.ConfigurationManager.AppSettings["OnlinePassword"].ToSecureString();
         private readonly Uri _xrmUri = new Uri(System.Configuration.ConfigurationManager.AppSettings["OnlineCrmUrl"].ToString());
 
+        //On-prem
+        //private readonly SecureString _username = System.Configuration.ConfigurationManager.AppSettings["OnpremUsername"].ToSecureString();
+        //private readonly SecureString _password = System.Configuration.ConfigurationManager.AppSettings["OnpremPassword"].ToSecureString();
+        //private readonly Uri _xrmUri = new Uri(System.Configuration.ConfigurationManager.AppSettings["OnpremCrmUrl"].ToString());
+
         [TestMethod]
         public void TestADFSLogin()
         {
+            //using (var xrmBrowser = new XrmBrowser(TestSettings.Options))
+            //{
+            //    xrmBrowser.LoginPage.Login(_xrmUri, _username, _password, ADFSLoginAction);
+            //}
+
             using (var xrmBrowser = new XrmBrowser(TestSettings.Options))
             {
-                xrmBrowser.LoginPage.Login(_xrmUri, _username, _password, ADFSLoginAction);
+                xrmBrowser.LoginPage.Login(_xrmUri, _username, _password);
             }
         }
 
@@ -32,10 +43,10 @@ namespace Microsoft.Dynamics365.UIAutomation.Sample
 
             //Example
             //--------------------------------------------------------------------------------------
-            //   var d = args.Driver;
-            //   d.FindElement(By.Id("passwordInput")).SendKeys(args.Password.ToUnsecureString());
-            //   d.ClickWhenAvailable(By.Id("submitButton"), new TimeSpan(0, 0, 2));
-            //   d.WaitForPageToLoad();
+            var d = args.Driver;
+            d.FindElement(By.Id("passwordInput")).SendKeys(args.Password.ToUnsecureString());
+            d.ClickWhenAvailable(By.Id("submitButton"), new TimeSpan(0, 0, 2));
+            d.WaitForPageToLoad();
             //--------------------------------------------------------------------------------------
         }
     }
