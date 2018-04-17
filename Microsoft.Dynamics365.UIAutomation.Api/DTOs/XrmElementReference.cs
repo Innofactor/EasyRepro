@@ -583,10 +583,27 @@ namespace Microsoft.Dynamics365.UIAutomation.Api
         }
         public static class GuidedHelp
         {
-            public static string MarsOverlay = "GuidedHelp_MarsOverlay";
+            static GuidedHelp()
+            {
+                if (LoginPage.Online)
+                {
+                    MarsOverlay = "GuidedHelp_MarsOverlay";
+                    ButtonClose = "GuidedHelp_ButtonClose";
+                }
+                else
+                {
+                    MarsOverlay = "InlineDialog_Background";
+                    ButtonClose = "buttonClose";
+                    GuideIFrame = "InlineDialog_Iframe";
+                }
+            }
+
+            public static string MarsOverlay;
             public static string ButBegin = "GuidedHelp_ButBegin";
-            public static string ButtonClose = "GuidedHelp_ButtonClose";
+            public static string ButtonClose;
             public static string Close = "GuidedHelp_Close";
+
+            public static string GuideIFrame;
 
         }
         public static class Notification

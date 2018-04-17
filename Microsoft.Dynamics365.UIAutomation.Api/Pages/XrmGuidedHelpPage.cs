@@ -28,10 +28,16 @@ namespace Microsoft.Dynamics365.UIAutomation.Api
             get
             {
                 bool isGuidedHelpEnabled = false;
-                bool.TryParse(
-                    this.Browser.Driver.ExecuteScript("return Xrm.Internal.isFeatureEnabled('FCB.GuidedHelp') && Xrm.Internal.isGuidedHelpEnabledForUser();").ToString(),
-                    out isGuidedHelpEnabled);
-
+                string getIsEnabledGuideScript = string.Empty;
+                if (LoginPage.Online)
+                {
+                    getIsEnabledGuideScript = "return Xrm.Internal.isFeatureEnabled('FCB.GuidedHelp') && Xrm.Internal.isGuidedHelpEnabledForUser();";
+                }
+                else
+                {
+                    getIsEnabledGuideScript = "return Xrm.Internal.isGuidedHelpEnabledForUser();";
+                }
+                bool.TryParse(this.Browser.Driver.ExecuteScript(getIsEnabledGuideScript).ToString(), out isGuidedHelpEnabled);
                 return isGuidedHelpEnabled;
             }
         }
@@ -48,26 +54,43 @@ namespace Microsoft.Dynamics365.UIAutomation.Api
 
                 if (IsEnabled)
                 {
-                    driver.WaitUntilVisible(By.XPath(Elements.Xpath[Reference.GuidedHelp.MarsOverlay]), new TimeSpan(0, 0, 15), d =>
+                    if (LoginPage.Online)
                     {
-                        var allMarsElements = driver
-                            .FindElement(By.XPath(Elements.Xpath[Reference.GuidedHelp.MarsOverlay]))
-                            .FindElements(By.XPath(".//*"));
-
-                        foreach (var element in allMarsElements)
+                        driver.WaitUntilVisible(By.XPath(Elements.Xpath[Reference.GuidedHelp.MarsOverlay]), new TimeSpan(0, 0, 15), d =>
                         {
-                            var buttonId = driver.ExecuteScript("return arguments[0].id;", element).ToString();
+                            var allMarsElements = driver
+                                .FindElement(By.XPath(Elements.Xpath[Reference.GuidedHelp.MarsOverlay]))
+                                .FindElements(By.XPath(".//*"));
 
-                            if (buttonId.Equals(Elements.ElementId[Reference.GuidedHelp.Close], StringComparison.InvariantCultureIgnoreCase))
+                            foreach (var element in allMarsElements)
                             {
-                                driver.WaitUntilClickable(By.Id(buttonId), new TimeSpan(0, 0, 5));
+                                var buttonId = driver.ExecuteScript("return arguments[0].id;", element).ToString();
 
-                                element.Click();
+                                if (buttonId.Equals(Elements.ElementId[Reference.GuidedHelp.Close], StringComparison.InvariantCultureIgnoreCase))
+                                {
+                                    driver.WaitUntilClickable(By.Id(buttonId), new TimeSpan(0, 0, 5));
+
+                                    element.Click();
+                                }
                             }
-                        }
 
-                        returnValue = true;
-                    });
+                            returnValue = true;
+                        });
+                    }
+                    else
+                    {
+                        driver.WaitUntilVisible(By.Id(Reference.GuidedHelp.MarsOverlay), new TimeSpan(0, 0, 15), d =>
+                        {
+                            driver.SwitchTo().Frame(Reference.GuidedHelp.GuideIFrame);
+                            driver.WaitUntilClickable(By.Id(Reference.GuidedHelp.ButtonClose), new TimeSpan(0, 0, 5));
+                            var e = driver.FindElement(By.Id(Reference.GuidedHelp.ButtonClose));
+                            e.Click(true);
+                            driver.SwitchTo().DefaultContent();
+
+                            returnValue = true;
+                        });
+                    }
+
                 }
 
                 return returnValue;

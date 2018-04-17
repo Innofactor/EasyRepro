@@ -23,6 +23,9 @@ namespace Microsoft.Dynamics365.UIAutomation.Api
     public class LoginPage
         : XrmPage
     {
+
+        public static bool Online { get; set; }
+
         public string[] OnlineDomains { get; set; }
 
         public LoginPage(InteractiveBrowser browser)
@@ -87,10 +90,10 @@ namespace Microsoft.Dynamics365.UIAutomation.Api
         private LoginResult Login(IWebDriver driver, Uri uri, SecureString username, SecureString password, Action<LoginRedirectEventArgs> redirectAction)
         {
             var redirect = false;
-            bool online = !(this.OnlineDomains != null && !this.OnlineDomains.Any(d => uri.Host.EndsWith(d)));
+            Online = !(this.OnlineDomains != null && !this.OnlineDomains.Any(d => uri.Host.EndsWith(d)));
             driver.Navigate().GoToUrl(uri);
 
-            if (online)
+            if (Online)
             {
                 if (driver.IsVisible(By.Id("use_another_account_link")))
                     driver.ClickWhenAvailable(By.Id("use_another_account_link"));
@@ -130,6 +133,11 @@ namespace Microsoft.Dynamics365.UIAutomation.Api
                         e => { e.WaitForPageToLoad(); },
                         f => { throw new Exception("Login page failed."); });
                 }
+            }
+
+            else
+            {
+                driver.Navigate().GoToUrl("http://" + Uri.EscapeDataString(username.ToUnsecureString()) + ":" + Uri.EscapeDataString(password.ToUnsecureString()) + "@" + uri.Authority + uri.AbsolutePath);
             }
 
             return redirect ? LoginResult.Redirect : LoginResult.Success;
