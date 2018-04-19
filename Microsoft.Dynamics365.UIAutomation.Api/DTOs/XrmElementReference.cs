@@ -84,6 +84,7 @@ namespace Microsoft.Dynamics365.UIAutomation.Api
             { "Nav_SearchLabel"       , "id(\"findHintText\")"},
             { "Nav_Search"       , "id(\"search\")"},
             { "Nav_StartSearch"       , "id(\"findCriteriaButton\")"},
+            { "Nav_HomeTab", "//span[@name=\"TabHome\"] | //span[@id=\"TabHome\"] | //*[@id='HomeTabLink']" },
                   
             //Grid
             { "Grid_JumpBar"       , "id(\"crmGrid_JumpBar\")"},

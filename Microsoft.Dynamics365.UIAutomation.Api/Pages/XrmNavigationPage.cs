@@ -47,16 +47,12 @@ namespace Microsoft.Dynamics365.UIAutomation.Api
             return this.Execute(GetOptions("Open Menu Menu"), driver =>
             {
                 var dictionary = new Dictionary<string, IWebElement>();
-
                 var topItem = driver.FindElements(By.ClassName(Elements.CssClass[Reference.Navigation.TopLevelItem])).FirstOrDefault();
-                topItem?.FindElement(By.Name(Elements.Name[Reference.Navigation.HomeTab])).Click();
-
-              //  driver.ClickWhenAvailable(By.XPath(Elements.Xpath[Reference.Navigation.HomeTab]));
-
+                topItem?.FindElement(By.XPath(Elements.Xpath[Reference.Navigation.HomeTab])).Click();
                 Thread.Sleep(1000);
-
                 var element = driver.FindElement(By.XPath(Elements.Xpath[Reference.Navigation.ActionGroup]));
                 var subItems = element.FindElements(By.ClassName(Elements.CssClass[Reference.Navigation.ActionButtonContainer]));
+
 
                 foreach (var subItem in subItems)
                 {
@@ -78,7 +74,7 @@ namespace Microsoft.Dynamics365.UIAutomation.Api
         {
             Browser.ThinkTime(thinkTime);
 
-            return this.Execute(GetOptions($": {area} > {subArea}"), driver =>
+            var temp = this.Execute(GetOptions($": {area} > {subArea}"), driver =>
             {
                 area = area.ToLower();
                 subArea = subArea.ToLower();
@@ -104,6 +100,8 @@ namespace Microsoft.Dynamics365.UIAutomation.Api
 
                 return true;
             });
+
+            return temp;
         }
 
         /// <summary>
