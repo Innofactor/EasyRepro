@@ -74,18 +74,16 @@ namespace Microsoft.Dynamics365.UIAutomation.Api
         {
             Browser.ThinkTime(thinkTime);
 
-            var temp = this.Execute(GetOptions($": {area} > {subArea}"), driver =>
+            return this.Execute(GetOptions($": {area} > {subArea}"), driver =>
             {
                 area = area.ToLower();
                 subArea = subArea.ToLower();
-
                 var areas = OpenMenu().Value;
 
                 if (!areas.ContainsKey(area))
                 {
                     throw new InvalidOperationException($"No area with the name '{area}' exists.");
                 }
-
                 var subAreas = OpenSubMenu(areas[area]).Value;
 
                 if (!subAreas.ContainsKey(subArea))
@@ -100,8 +98,6 @@ namespace Microsoft.Dynamics365.UIAutomation.Api
 
                 return true;
             });
-
-            return temp;
         }
 
         /// <summary>
