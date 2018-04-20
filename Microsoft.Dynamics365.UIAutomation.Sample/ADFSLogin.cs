@@ -17,18 +17,9 @@ namespace Microsoft.Dynamics365.UIAutomation.Sample
         private readonly SecureString _password = System.Configuration.ConfigurationManager.AppSettings["OnlinePassword"].ToSecureString();
         private readonly Uri _xrmUri = new Uri(System.Configuration.ConfigurationManager.AppSettings["OnlineCrmUrl"].ToString());
 
-        //On-prem
-        //private readonly SecureString _username = System.Configuration.ConfigurationManager.AppSettings["OnpremUsername"].ToSecureString();
-        //private readonly SecureString _password = System.Configuration.ConfigurationManager.AppSettings["OnpremPassword"].ToSecureString();
-        //private readonly Uri _xrmUri = new Uri(System.Configuration.ConfigurationManager.AppSettings["OnpremCrmUrl"].ToString());
-
         [TestMethod]
         public void TestADFSLogin()
         {
-            //using (var xrmBrowser = new XrmBrowser(TestSettings.Options))
-            //{
-            //    xrmBrowser.LoginPage.Login(_xrmUri, _username, _password, ADFSLoginAction);
-            //}
 
             using (var xrmBrowser = new XrmBrowser(TestSettings.Options))
             {
