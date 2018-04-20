@@ -128,15 +128,6 @@ namespace Microsoft.Dynamics365.UIAutomation.Api
                         if (driver.IsVisible(By.XPath(Elements.Xpath[Reference.Login.StaySignedIn])))
                         {
                             driver.ClickWhenAvailable(By.XPath(Elements.Xpath[Reference.Login.StaySignedIn]));
-
-                            try
-                            {
-                                driver.FindElement(By.XPath(Elements.Xpath[Reference.Login.StaySignedIn])).Submit();
-
-                            }
-                            catch (Exception)
-                            {
-                            }
                         }
 
                         driver.WaitUntilVisible(By.XPath(Elements.Xpath[Reference.Login.CrmMainPage])
@@ -147,7 +138,6 @@ namespace Microsoft.Dynamics365.UIAutomation.Api
                     catch (Exception ex)
                     {
                     }
-
                 }
             }
 
